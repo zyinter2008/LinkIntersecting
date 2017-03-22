@@ -10,6 +10,7 @@ struct Link {
 void insertNode(Link *&head, Link *&tail, int data);
 void buildLoopLink(Link *&head);
 Link *existLoop(Link *head);
+Link * loopEntry(Link *head, Link *meetNode);
 
 void buildCrossLink(Link *&headA, Link *&headB, Link *&tail);
 
@@ -18,8 +19,10 @@ int main() {
 //判断是否有环
 	buildLoopLink(head);
 	Link *loop = existLoop(head);
+	Link *entry = loopEntry(head, loop);
 	if (NULL != loop) {
-		cout << "Exist loop, value:" << loop->data << endl;
+		cout << "Exist loop, meet value:" << loop->data << ", entry value:"
+				<< entry->data << endl;
 	}
 
 //判断两个链表是否相交，简单场景，假设俩个链表均不带环
@@ -27,8 +30,10 @@ int main() {
 	buildCrossLink(headA, headB, tail);
 	tail->next = headA;
 	Link *loopAB = existLoop(headB);
+	Link *entryAB = loopEntry(headB, loopAB);
 	if (NULL != loopAB) {
-		cout << "Two list cross, value:" << loopAB->data << endl;
+		cout << "Two list cross, value:" << loopAB->data << ", entry value:"
+				<< entryAB->data << endl;
 	}
 
 	return 0;
@@ -63,6 +68,19 @@ Link * existLoop(Link *head) {
 		slow = slow->next;
 		if (slow == fast) {
 			return slow;
+		}
+	}
+
+	return NULL;
+}
+
+Link * loopEntry(Link *head, Link *meetNode) {
+	Link * mPtr = meetNode, *hPtr = head;
+	while (mPtr != NULL && hPtr != NULL) {
+		meetNode = meetNode->next;
+		hPtr = hPtr->next;
+		if (hPtr == meetNode) {
+			return hPtr;
 		}
 	}
 
